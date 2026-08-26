@@ -15,3 +15,16 @@ class UserRepository:
                 if user_id is not None:
                     user_id=user_id[0]
                 return user_id
+
+    def get_user_by_email(self, email:str):
+        with pool.connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id,email,password_hash FROM users WHERE email = %s",
+                    (email,)
+                )
+                user_info = cursor.fetchone()
+                if user_info is None:
+                    return None
+                
+                return user_info
